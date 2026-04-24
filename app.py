@@ -6,10 +6,10 @@ app = Flask(__name__)
 
 
 def get_connection():
-    server = os.getenv("distribuidasdb.database.windows.net")
-    database = os.getenv("AppDistribuidasDB")
-    username = os.getenv("ajkarots")
-    password = os.getenv("Ajk@rots1")
+    server = os.getenv("DB_SERVER")
+    database = os.getenv("DB_DATABASE")
+    username = os.getenv("DB_USERNAME")
+    password = os.getenv("DB_PASSWORD")
     port = os.getenv("DB_PORT", "1433")
 
     if not server:
