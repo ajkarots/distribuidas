@@ -122,6 +122,85 @@ def listar_productos():
         if conn:
             conn.close()
 
+@app.route("/enviar-alerta", methods=["POST"])
+
+def enviar_correo_alerta(asunto, mensaje, destino):
+    email_user = os.getenv("EMAIL_USER")
+    email_password = os.getenv("EMAIL_PASSWORD")
+
+    if not email_user:
+        raise ValueError("Falta EMAIL_USER")
+    if not email_password:
+        raise ValueError("Falta EMAIL_PASSWORD")
+
+    msg = MIMEText(mensaje, "plain", "utf-8")
+    msg["Subject"] = asunto
+    msg["From"] = email_user
+    msg["To"] = destino
+
+    servidor = smtplib.SMTP("smtp.gmail.com", 587)
+    servidor.starttls()
+    servidor.login(email_user, email_password)
+    servidor.sendmail(email_user, [destino], msg.as_string())
+    servidor.quit()
+
+def enviar_correo_alerta(asunto, mensaje destino):
+email_user = os.getenv("EMAIL_USER")
+email_password = os.getenv("EMAIL_PASSWORD")
+
+
+if not email_user:
+raise ValueError("Falta EMAIL_USER")
+if not email_password:
+raise ValueError("Falta EMAIL_PASSWORD")
+
+
+msg = MIMEText(mensaje, "plain"
+msg["Subject"] = asunto
+msg["From"] = email_user
+msg["To"]
+=
+destino
+
+
+"utf-8")
+
+
+servidor = smtplib.SMTP("smtp.gmail.com", 587)
+servidor.starttls()
+servidor.login(email_user, email_password)
+servidor.sendmail(email_user, [destino], msg.as_string())
+servidor.quit()
+
+def enviar_alerta():
+    try:
+        data = request.get_json()
+
+        destino = data.get("to")
+        asunto = data.get("subject")
+        mensaje = data.get("message")
+
+        if not destino or not asunto or not mensaje:
+            return jsonify({
+                "success": False,
+                "message": "Faltan datos"
+            }), 400
+
+        enviar_correo_alerta(asunto, mensaje, destino)
+
+        return jsonify({
+            "success": True,
+            "message": "Correo enviado"
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+        
+
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
