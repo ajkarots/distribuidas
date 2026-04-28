@@ -1,7 +1,9 @@
 import os
 from flask import Flask, jsonify
 from mssql_python import connect
-from flask_cors import CORS
+from flask import request
+import smtplib
+from email.mime.text import MIMEText
 
 
 app = Flask(__name__)
@@ -125,8 +127,6 @@ def listar_productos():
         if conn:
             conn.close()
 
-@app.route("/enviar-alerta", methods=["POST"])
-
 def enviar_correo_alerta(asunto, mensaje, destino):
     email_user = os.getenv("EMAIL_USER")
     email_password = os.getenv("EMAIL_PASSWORD")
@@ -141,40 +141,14 @@ def enviar_correo_alerta(asunto, mensaje, destino):
     msg["From"] = email_user
     msg["To"] = destino
 
-    servidor = smtplib.SMTP("smtp.gmail.com", 587)
-    servidor.starttls()
-    servidor.login(email_user, email_password)
-    servidor.sendmail(email_user, [destino], msg.as_string())
-    servidor.quit()
-
-def enviar_correo_alerta(asunto, mensaje destino):
-email_user = os.getenv("EMAIL_USER")
-email_password = os.getenv("EMAIL_PASSWORD")
+    with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
+        servidor.starttls()
+        servidor.login(email_user, email_password)
+        servidor.sendmail(email_user, [destino], msg.as_string())
 
 
-if not email_user:
-raise ValueError("Falta EMAIL_USER")
-if not email_password:
-raise ValueError("Falta EMAIL_PASSWORD")
-
-
-msg = MIMEText(mensaje, "plain"
-msg["Subject"] = asunto
-msg["From"] = email_user
-msg["To"]
-=
-destino
-
-
-"utf-8")
-
-
-servidor = smtplib.SMTP("smtp.gmail.com", 587)
-servidor.starttls()
-servidor.login(email_user, email_password)
-servidor.sendmail(email_user, [destino], msg.as_string())
-servidor.quit()
-
+# -------- ENDPOINT CORRECTO --------
+@app.route("/enviar-alerta", methods=["POST"])
 def enviar_alerta():
     try:
         data = request.get_json()
@@ -201,9 +175,6 @@ def enviar_alerta():
             "success": False,
             "error": str(e)
         }), 500
-        
-
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
