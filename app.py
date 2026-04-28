@@ -1,7 +1,8 @@
 import os
 from flask import Flask, jsonify
 from mssql_python import connect
-import flask_cors import CORS
+from flask_cors import CORS
+
 
 app = Flask(__name__)
 CORS(app)
