@@ -1,6 +1,5 @@
 import os
 from flask import Flask, jsonify
-from mssql_python import connect
 from flask import request
 import smtplib
 from email.mime.text import MIMEText
