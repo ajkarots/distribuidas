@@ -1,8 +1,10 @@
 import os
 from flask import Flask, jsonify
 from flask import request
+from flask_cors import CORS
 import smtplib
 from email.mime.text import MIMEText
+
 
 
 app = Flask(__name__)
